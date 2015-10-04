@@ -40,7 +40,7 @@ To build this on your own follow these steps:
 3.  Edit the options in the kernel arch/arm/configs/mapphone_mmi_defconfig.  See
     section 2 above for details.
 
-4.  Edit the nkernel.sh script and set the buildHome path at the top of the file
+4.  Edit the bkernel.sh script and set the buildHome path at the top of the file
     to the root of path of your CM12.1 repo.
 
 5.  From bash, go to the root of your CM12.1 build folder and run the bkernel.sh
