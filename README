@@ -4,7 +4,7 @@ Section 1 - EDITING THE CONFIG FILE                         Updated 2015-09-22
 The arch/arm/configs/mapphone_mmi_defconfig file in this kernel includes a special
 section called "JooJooBee666 special flags" located at around line 60.  To
 enable an option, remove the "#" at the beginning of the line and add "=y" to
-the end (refer to other options in the config file).
+the end (reference other options in the config file).
 
 Below are the meanings of each of these options:
 
@@ -41,7 +41,7 @@ To build this on your own follow these steps:
     section 2 above for details.
 
 4.  Edit the bkernel.sh script and set the buildHome path at the top of the file
-    to the root of path of your CM12.1 repo.
+    to the root of the path of your CM12.1 repo.
 
 5.  From bash, go to the root of your CM12.1 build folder and run the bkernel.sh
     script.
@@ -49,8 +49,9 @@ To build this on your own follow these steps:
 6.  Name the script as you see fit.
 
 7.  When completed, the script will place the ready to flash zip file in the out
-    folder.  The last thing it will do is show you the name of the file it created
-    so you can easily locate
+    folder.  Once completed, the script will show you the name of the file it created
+    so you can easily locate it.
+
 
 8.  Flash it and pray.
 
