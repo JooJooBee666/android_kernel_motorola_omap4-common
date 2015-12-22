@@ -30,7 +30,16 @@ if [ ! -d "$buildHome/out/jjb666" ]; then
 fi
 
 cp -r $buildHome/kernel/motorola/omap4-common/buildfiles/META-INF $buildHome/out/jjb666/
-cp -r $buildHome/kernel/motorola/omap4-common/buildfiles/system $buildHome/out/jjb666/
+cp -r /home/MADHOPS/jasonl/Android-Kitchen/6.0stash/kernel-mod/buildfiles/META-INF /media/oldlinux/Android-Kitchen/cm13/out/jjb666/
+if [ ! -d "/media/oldlinux/Android-Kitchen/cm13/out/jjb666/system" ]; then
+  mkdir /media/oldlinux/Android-Kitchen/cm13/out/jjb666/system
+fi
+if [ ! -d "/media/oldlinux/Android-Kitchen/cm13/out/jjb666/system/etc" ]; then
+  mkdir /media/oldlinux/Android-Kitchen/cm13/out/jjb666/system/etc
+fi
+if [ ! -d "/media/oldlinux/Android-Kitchen/cm13/out/jjb666/system/etc/kexec" ]; then
+  mkdir /media/oldlinux/Android-Kitchen/cm13/out/jjb666/system/etc/kexec
+fi
 cp ./out/target/product/maserati/kernel ./out/jjb666/system/etc/kexec
 cd $buildHome/out/jjb666
 
