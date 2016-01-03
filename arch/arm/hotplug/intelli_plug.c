@@ -342,7 +342,7 @@ static void __cpuinit intelli_plug_work_fn(struct work_struct *work)
 		}
 #ifdef DEBUG_INTELLI_PLUG
 		else
-			pr_info("intelli_plug is suspened!\n");
+			pr_info("intelli_plug is suspended!\n");
 #endif
 	}
 	queue_delayed_work_on(0, intelliplug_wq, &intelli_plug_work,
