@@ -53,9 +53,18 @@
 #define OMAP4430_VDD_MPU_OPPNITROA_UV		1390000		/* 1.1Ghz */
 #define OMAP4430_VDD_MPU_OPPNITROB_UV		1398000		/* 1.2Ghz */
 #define OMAP4430_VDD_MPU_OPPNITROC_UV		1402000		/* 1.3Ghz */
+
+#if !defined(CONFIG_USE_HIGH_VOLTAGE) && !defined(CONFIG_USE_ULV_VOLTAGE)
 #define OMAP4430_VDD_MPU_OPPNITROD_UV		1415000		/* 1.4Ghz */
-#define OMAP4430_VDD_MPU_OPPNITROD_ULV		1409000		/* 1.4Ghz */
-#define OMAP4430_VDD_MPU_OPPNITROD_UV_HV	1439000		/* 1.4Ghz HV */
+#endif
+
+#ifdef CONFIG_USE_ULV_VOLTAGE
+#define OMAP4430_VDD_MPU_OPPNITROD_UV		1409000		/* 1.4Ghz */
+#endif
+
+#ifdef CONFIG_USE_HIGH_VOLTAGE
+#define OMAP4430_VDD_MPU_OPPNITROD_UV		1439000		/* 1.4Ghz HV */
+#endif
 
 struct omap_volt_data omap443x_vdd_mpu_volt_data[] = {
 	VOLT_DATA_DEFINE(OMAP4430_VDD_MPU_OPP50_UV, 0, OMAP44XX_CONTROL_FUSE_MPU_OPP50, 0xf4, 0x0c, OMAP_ABB_NOMINAL_OPP, 0),
@@ -90,16 +99,8 @@ struct omap_volt_data omap443x_vdd_mpu_volt_data[] = {
 #endif
 #ifdef CONFIG_USE_14_CLOCK
 	/* Add 1.4Ghz */
-#ifdef CONFIG_USE_HIGH_VOLTAGE
-	VOLT_DATA_DEFINE(OMAP4430_VDD_MPU_OPPNITROD_UV_HV, 0, OMAP44XX_CONTROL_FUSE_MPU_OPPNITROSB, 0xfa, 0x27, OMAP_ABB_FAST_OPP, 0),
-#else
-#ifdef CONFIG_USE_ULV_VOLTAGE
-        VOLT_DATA_DEFINE(OMAP4430_VDD_MPU_OPPNITROD_ULV, 0, OMAP44XX_CONTROL_FUSE_MPU_OPPNITROSB, 0xfa, 0x27, OMAP_ABB_FAST_OPP, 0),
-#else
 	VOLT_DATA_DEFINE(OMAP4430_VDD_MPU_OPPNITROD_UV, 0, OMAP44XX_CONTROL_FUSE_MPU_OPPNITROSB, 0xfa, 0x27, OMAP_ABB_FAST_OPP, 0),
-#endif
-	#endif
-#endif
+#endif 
 	VOLT_DATA_DEFINE(0, 0, 0, 0, 0, 0, 0),
 };
 
@@ -165,15 +166,7 @@ static struct omap_vdd_dep_volt omap443x_vdd_mpu_core_dep_data[] = {
 	{.main_vdd_volt = OMAP4430_VDD_MPU_OPPNITROC_UV, .dep_vdd_volt = OMAP4430_VDD_CORE_OPP100_UV},
 #endif
 #ifdef CONFIG_USE_14_CLOCK
-#ifdef CONFIG_USE_HIGH_VOLTAGE
-	{.main_vdd_volt = OMAP4430_VDD_MPU_OPPNITROD_UV_HV, .dep_vdd_volt = OMAP4430_VDD_CORE_OPP100_UV},
-#else
-#ifdef CONFIG_USE_ULV_VOLTAGE
-        {.main_vdd_volt = OMAP4430_VDD_MPU_OPPNITROD_ULV, .dep_vdd_volt = OMAP4430_VDD_CORE_OPP100_UV},
-#else
 	{.main_vdd_volt = OMAP4430_VDD_MPU_OPPNITROD_UV, .dep_vdd_volt = OMAP4430_VDD_CORE_OPP100_UV},
-#endif
-#endif
 #endif
 };
 
@@ -245,15 +238,7 @@ static struct omap_opp_def __initdata omap443x_opp_def_list[] = {
 #endif
 #ifdef CONFIG_USE_14_CLOCK
 	/* MPU OPP4 - OPP-NTSB2 */
-#ifdef CONFIG_USE_HIGH_VOLTAGE
-	OPP_INITIALIZER("mpu", "dpll_mpu_ck", "mpu", false, 1400000000, OMAP4430_VDD_MPU_OPPNITROD_UV_HV),
-#else
-#ifdef CONFIG_USE_ULV_VOLTAGE
-        OPP_INITIALIZER("mpu", "dpll_mpu_ck", "mpu", false, 1400000000, OMAP4430_VDD_MPU_OPPNITROD_ULV),
-#else
 	OPP_INITIALIZER("mpu", "dpll_mpu_ck", "mpu", false, 1400000000, OMAP4430_VDD_MPU_OPPNITROD_UV),
-#endif
-#endif
 #endif
 	/* L3 OPP1 - OPP50 */
 	OPP_INITIALIZER("l3_main_1", "virt_l3_ck", "core", true, 100000000, OMAP4430_VDD_CORE_OPP50_UV),
