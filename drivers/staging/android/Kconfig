@@ -107,9 +107,9 @@ config ANDROID_LMK_PARAM_AUTO_TUNE
 	  There are cases that LMK doesn't run, even when it must run.
 	  It is due to LMK shrinker not considering memory status per zone.
 	  So add LMK parameters(other_free, other_file) tunnig code to
-	  consider target zone of LMK shrinker and adjust "minfree_size" 
+	  consider target zone of LMK shrinker and adjust "minfree_size"
 	  proptionally to the zone size.
-	  
+          
 	  This also introduces a new module parameter: lmk_fast_run (Default: 1)
 
 endif # if ANDROID

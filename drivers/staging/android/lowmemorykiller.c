@@ -296,10 +296,14 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 			return 0;
 	}
 
+#ifdef CONFIG_ANDROID_LMK_PARAM_AUTO_TUNE
+  other_free = global_page_state(NR_FREE_PAGES);
+#else
   if (global_page_state(NR_FREE_PAGES) > totalreserve_pages)
   	other_free = global_page_state(NR_FREE_PAGES) - totalreserve_pages;
   else
     other_free = 0;
+#endif
 
 	if (global_page_state(NR_FILE_PAGES) >
       global_page_state(NR_SHMEM) + total_swapcache_pages)
