@@ -355,7 +355,7 @@ int get_write_access(struct inode * inode)
 
 int deny_write_access(struct file * file)
 {
-	struct inode *inode = file_inode(file);
+	struct inode *inode = file->f_path.dentry->d_inode;
 
 	spin_lock(&inode->i_lock);
 	if (atomic_read(&inode->i_writecount) > 0) {
@@ -1610,6 +1610,16 @@ static int path_lookupat(int dfd, const char *name,
 		if (!nd->inode->i_op->lookup) {
 			path_put(&nd->path);
 			err = -ENOTDIR;
+		}
+	}
+
+	if (!err) {
+		struct super_block *sb = nd->inode->i_sb;
+		if (sb->s_flags & MS_RDONLY) {
+			if (d_is_su(nd->path.dentry) && !su_visible()) {
+				path_put(&nd->path);
+				err = -ENOENT;
+			}
 		}
 	}
 
@@ -3400,3 +3410,4 @@ EXPORT_SYMBOL(vfs_symlink);
 EXPORT_SYMBOL(vfs_unlink);
 EXPORT_SYMBOL(dentry_unhash);
 EXPORT_SYMBOL(generic_readlink);
+
