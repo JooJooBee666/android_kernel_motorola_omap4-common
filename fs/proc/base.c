@@ -838,7 +838,7 @@ static ssize_t mem_rw(struct file *file, char __user *buf,
 		buf += this_len;
 		addr += this_len;
 		copied += this_len;
-		count -= this_len;	
+		count -= this_len;
 	}
 	*ppos = addr;
 
@@ -854,11 +854,16 @@ static ssize_t mem_read(struct file *file, char __user *buf,
 	return mem_rw(file, buf, count, ppos, 0);
 }
 
+#define mem_write NULL
+
+#ifndef mem_write
+/* This is a security hazard */
 static ssize_t mem_write(struct file *file, const char __user *buf,
 			 size_t count, loff_t *ppos)
 {
 	return mem_rw(file, (char __user*)buf, count, ppos, 1);
 }
+#endif
 
 loff_t mem_lseek(struct file *file, loff_t offset, int orig)
 {

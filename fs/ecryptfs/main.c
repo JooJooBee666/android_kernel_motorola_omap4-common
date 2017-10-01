@@ -281,7 +281,7 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
 	char *fnek_src;
 	char *cipher_key_bytes_src;
 	char *fn_cipher_key_bytes_src;
-	u8 cipher_code;
+	u32 auth_tok_flags;
 
 	*check_ruid = 0;
 
@@ -298,8 +298,11 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
 		case ecryptfs_opt_sig:
 		case ecryptfs_opt_ecryptfs_sig:
 			sig_src = args[0].from;
+			auth_tok_flags =
+				(token == ecryptfs_opt_ecryptfs_sig ?
+				    ECRYPTFS_AUTH_TOK_PRIMARY : 0);
 			rc = ecryptfs_add_global_auth_tok(mount_crypt_stat,
-							  sig_src, 0);
+				sig_src, auth_tok_flags);
 			if (rc) {
 				printk(KERN_ERR "Error attempting to register "
 				       "global sig; rc = [%d]\n", rc);
@@ -425,18 +428,6 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
 	    && !fn_cipher_key_bytes_set)
 		mount_crypt_stat->global_default_fn_cipher_key_bytes =
 			mount_crypt_stat->global_default_cipher_key_size;
-
-	cipher_code = ecryptfs_code_for_cipher_string(
-		mount_crypt_stat->global_default_cipher_name,
-		mount_crypt_stat->global_default_cipher_key_size);
-	if (!cipher_code) {
-		ecryptfs_printk(KERN_ERR,
-				"eCryptfs doesn't support cipher: %s",
-				mount_crypt_stat->global_default_cipher_name);
-		rc = -EINVAL;
-		goto out;
-	}
-
 	mutex_lock(&key_tfm_list_mutex);
 	if (!ecryptfs_tfm_exists(mount_crypt_stat->global_default_cipher_name,
 				 NULL)) {
@@ -522,6 +513,7 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
 		goto out;
 	}
 
+	s->s_flags = flags;
 	rc = bdi_setup_and_register(&sbi->bdi, "ecryptfs", BDI_CAP_MAP_COPY);
 	if (rc)
 		goto out1;
@@ -557,15 +549,6 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
 	}
 
 	ecryptfs_set_superblock_lower(s, path.dentry->d_sb);
-
-	/**
-	 * Set the POSIX ACL flag based on whether they're enabled in the lower
-	 * mount. Force a read-only eCryptfs mount if the lower mount is ro.
-	 * Allow a ro eCryptfs mount even when the lower mount is rw.
-	 */
-	s->s_flags = flags & ~MS_POSIXACL;
-	s->s_flags |= path.dentry->d_sb->s_flags & (MS_RDONLY | MS_POSIXACL);
-
 	s->s_maxbytes = path.dentry->d_sb->s_maxbytes;
 	s->s_blocksize = path.dentry->d_sb->s_blocksize;
 	s->s_magic = ECRYPTFS_SUPER_MAGIC;

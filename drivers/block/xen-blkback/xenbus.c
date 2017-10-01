@@ -400,7 +400,6 @@ static int xen_blkbk_remove(struct xenbus_device *dev)
 		be->blkif = NULL;
 	}
 
-	kfree(be->mode);
 	kfree(be);
 	dev_set_drvdata(&dev->dev, NULL);
 	return 0;
